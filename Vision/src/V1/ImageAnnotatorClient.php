@@ -96,10 +96,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -133,10 +132,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -167,10 +165,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -201,10 +198,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -235,10 +231,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -269,10 +264,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -303,10 +297,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -337,10 +330,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -371,10 +363,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -405,10 +396,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -439,10 +429,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -473,10 +462,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
@@ -519,10 +507,9 @@ class ImageAnnotatorClient extends ImageAnnotatorGapicClient
      *
      *     @type ImageContext        $imageContext  Additional context that may accompany the image.
      *     @type RetrySettings|array $retrySettings
-     *          Retry settings to use for this call. Can be a
-     *          {@see RetrySettings} object, or an associative array
-     *          of retry settings parameters. See the documentation on
-     *          {@see RetrySettings} for example usage.
+     *           Retry settings to use for this call. Can be a {@see RetrySettings} object, or an
+     *           associative array of retry settings parameters. See the documentation on
+     *           {@see RetrySettings} for example usage.
      * }
      *
      * @return AnnotateImageResponse
