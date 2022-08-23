@@ -47,7 +47,9 @@ class Page
         $constants = $this->getConstantItems();
 
         $classItem = $this->getClassItem();
-        $classItem['children'] = array_merge(array_keys($methods), array_keys($constants));
+        if ($children = array_merge(array_keys($methods), array_keys($constants))) {
+            $classItem['children'] = $children;
+        }
 
         return array_merge(
             [$classItem],
