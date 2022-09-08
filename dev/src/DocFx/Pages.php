@@ -82,6 +82,11 @@ class Pages
                 continue;
             }
 
+            // Skip classes that are in the structure.xml but not a part of this namespace
+            if (0 !== strpos($fullName, '\\' . $this->namespace)) {
+                continue;
+            }
+
             $pages[$fullName] = new Page($classNode, $file['path']);
         }
 

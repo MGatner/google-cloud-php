@@ -72,7 +72,7 @@ class DocFx extends Command
         }
 
         $releaseLevel = $this->getReleaseLevel($componentPath);
-        $namespace = $this->getNamespace($componentPath, $component);
+        $namespaces = $this->getNamespaces($componentPath, $component);
 
         if (!is_dir($outDir)) {
             if (!mkdir($outDir)) {
@@ -87,21 +87,24 @@ class DocFx extends Command
         $indent = 2; // The amount of spaces to use for indentation of nested nodes
         $flags = Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK;
 
-        $pages = new Pages($xml, $namespace);
+        $tocItems = [];
+        foreach ($namespaces as $namespace) {
+            $pages = new Pages($xml, $namespace);
 
-        foreach ($pages->getPages() as $page) {
-            $docFxArray = ['items' => $page->getItems()];
+            foreach ($pages->getPages() as $page) {
+                $docFxArray = ['items' => $page->getItems()];
 
-            // Dump the YAML for the class node
-            $yaml = '### YamlMime:UniversalReference' . PHP_EOL;
-            $yaml .= Yaml::dump($docFxArray, $inline, $indent, $flags);
+                // Dump the YAML for the class node
+                $yaml = '### YamlMime:UniversalReference' . PHP_EOL;
+                $yaml .= Yaml::dump($docFxArray, $inline, $indent, $flags);
 
-            // Write the YAML to a file
-            $outFile = sprintf('%s/%s.yml', $outDir, $page->getFilename());
-            file_put_contents($outFile, $yaml);
+                // Write the YAML to a file
+                $outFile = sprintf('%s/%s.yml', $outDir, $page->getFilename());
+                file_put_contents($outFile, $yaml);
+            }
+
+            $tocItems = array_merge($tocItems, $pages->getTocItems());
         }
-
-        $tocItems = $pages->getTocItems();
 
         // Add an "overview" file if it exists
         $overviewFile = sprintf('%s/README.md', $componentPath);
@@ -168,7 +171,7 @@ class DocFx extends Command
         return $repoMetadataJson['release_level'];
     }
 
-    private function getNamespace(string $componentPath, string $component): string
+    private function getNamespaces(string $componentPath, string $component): array
     {
         $composerPath = $componentPath . '/composer.json';
         if (!file_exists($composerPath)) {
@@ -182,16 +185,21 @@ class DocFx extends Command
             ));
         }
 
+        $namespaces = [];
         foreach ($composerJson['autoload']['psr-4'] as $namespace => $dir) {
-            if ($dir == 'src') {
-                return rtrim($namespace, '\\');
+            if (0 === strpos($dir, 'src')) {
+                $namespaces[] = rtrim($namespace, '\\');
             }
         }
 
-        throw new RuntimeException(sprintf(
-            'composer autoload.psr-4 does not contain a namespace for component "%s"',
-            $component
-        ));
+        if (empty($namespaces)) {
+            throw new RuntimeException(sprintf(
+                'composer autoload.psr-4 does not contain a namespace for component "%s"',
+                $component
+            ));
+        }
+
+        return $namespaces;
     }
 
     private function checkComponent(string $component): string
@@ -205,7 +213,7 @@ class DocFx extends Command
             }
         }
         if (!in_array($component, $components)) {
-            throw new \Exception($input->getOption('component') ? 'Invalid component provided'
+            throw new \Exception($component ? 'Invalid component provided'
                 : 'You are not in a component directory. Run this command from a valid component'
                   . ' directory or provide a valid component using the "component" option.');
         }
