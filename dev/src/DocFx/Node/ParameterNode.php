@@ -107,7 +107,7 @@ class ParameterNode
             $parameters[] = new ParameterNode(
                 $name,
                 $type,
-                $this->replaceProtoRef($this->replaceSeeTag(trim($description)))
+                $this->replaceSeeTag(trim($description))
             );
         }
 

@@ -9,8 +9,6 @@ vendor/
 
 # DocFX
 **/out/*
-**/docs.metadata
-*/.phpdoc/*
 
 # do not delete
 keys/

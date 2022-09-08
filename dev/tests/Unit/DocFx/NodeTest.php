@@ -35,21 +35,44 @@ class NodeTest extends TestCase
         $params = $method->getParameters();
 
         // Assert 5 parameters have been parsed
-        $this->assertCount(5, $params);
+        $this->assertCount(6, $params);
 
         // Assert parent option parameter
-        $this->assertEquals('data', $params[0]->getName());
-        $this->assertEquals('array', $params[0]->getType());
+        $this->assertEquals('data', $params[1]->getName());
+        $this->assertEquals('array', $params[1]->getType());
         $this->assertEquals(
             'Optional. Data for populating the Message object.',
-            $params[0]->getDescription()
+            $params[1]->getDescription()
         );
 
         // Assert nested parameter
-        $this->assertEquals('↳ total_pages', $params[3]->getName());
-        $this->assertEquals('int', $params[3]->getType());
+        $this->assertEquals('↳ total_pages', $params[4]->getName());
+        $this->assertEquals('int', $params[4]->getType());
         $this->assertEquals(
             'This field gives the total number of pages in the file.',
+            $params[4]->getDescription()
+        );
+    }
+
+    public function testProtoRefInParameters()
+    {
+        $nestedParamsXml = file_get_contents(__DIR__ . '/../../fixtures/phpdoc/nestedparams.xml');
+        $method = new MethodNode(new SimpleXMLElement($nestedParamsXml));
+
+        $params = $method->getParameters();
+
+        // Assert 5 parameters have been parsed
+        $this->assertCount(6, $params);
+
+        // Assert proto ref
+        $this->assertStringContainsString(
+            '<xref uid="\Google\Cloud\Vision\V1\AnnotateImageResponse::getImage()">images</xref>',
+            $params[0]->getDescription()
+        );
+
+        // Assert proto ref in nested param
+        $this->assertStringContainsString(
+            '<xref uid="\Google\Cloud\Vision\V1\Image">Image</xref>',
             $params[3]->getDescription()
         );
     }

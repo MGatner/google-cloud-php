@@ -98,7 +98,7 @@ class MethodNode
             $parameter = new ParameterNode(
                 $parameterName,
                 (string) $parameterNode->type,
-                $description
+                $this->replaceProtoRef($description)
             );
 
             $parameters[] = $parameter;

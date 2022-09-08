@@ -13,11 +13,13 @@ do
     if [ "$STAGING_BUCKET" != "" ]; then
         dev/google-cloud docfx \
             --component $DIR \
+            --out $DIR/out \
             --metadata-version $VERSION \
             --staging-bucket $STAGING_BUCKET
     else
         dev/google-cloud docfx \
             --component $DIR \
+            --out $DIR/out \
             --metadata-version $VERSION
     fi
 done

@@ -47,6 +47,7 @@ class DocFx extends Command
         $componentPath = $this->checkComponent($component);
         $output->writeln(sprintf('Generating documentation for <options=bold;fg=white>%s</>', $component));
         $xml = $input->getOption('xml');
+        $outDir = $input->getOption('out');
         if (empty($xml)) {
             $output->write('Running phpdoc to generate structure.xml... ');
             // Run "phpdoc"
@@ -55,17 +56,18 @@ class DocFx extends Command
                 '-d',
                 sprintf('%s/src', $componentPath),
                 '--template',
-                'xml'
+                'xml',
+                '--target',
+                $outDir
             ]);
             $process->mustRun();
             $output->writeln('Done.');
-            $xml = '.phpdoc/build/structure.xml';
+            $xml = $outDir . '/structure.xml';
         }
         if (!file_exists($xml)) {
             throw new \Exception($input->getOption('xml') ? 'Unable to load provided structure.xml'
                 : sprintf('Default structure.xml file "%s" not found.', $xml));
         }
-        $outDir = $input->getOption('out');
 
         if (!file_exists($xml)) {
             throw new RuntimeException('provided path to structure.xml does not exist');
@@ -132,7 +134,8 @@ class DocFx extends Command
                 '--name',
                 strtolower($component),
                 '--version',
-                $metadataVersion
+                $metadataVersion,
+                $outDir . '/docs.metadata'
             ]);
             $process->mustRun();
             $output->writeln('Done.');
@@ -147,7 +150,10 @@ class DocFx extends Command
                 '--staging-bucket',
                 $stagingBucket,
                 '--destination-prefix',
-                'docfx-'
+                'docfx-',
+                '--metadata-file',
+                 // use "realdir" until https://github.com/googleapis/docuploader/issues/132 is fixed
+                realpath($outDir) . '/docs.metadata'
             ]);
             $process->mustRun();
             $output->writeln('Done.');
