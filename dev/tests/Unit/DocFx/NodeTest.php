@@ -149,6 +149,12 @@ class NodeTest extends TestCase
                 '<xref uid="\Google\Some\Code::INVALID_ARGUMENT">google.some.Code.INVALID_ARGUMENT</xref>'
             ],
             [
+                // Numbers in the class name
+                'Output only. The service account that will be used by the Log Router to access your Cloud KMS key. Before enabling CMEK for Log Router, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account that the Log Router will use to access your Cloud KMS key. Use [GetCmekSettings][google.logging.v2.ConfigServiceV2.GetCmekSettings] to obtain the service account ID. See [Enabling CMEK for Log Router](https://cloud.google.com/logging/docs/routing/managed-encryption) for more information.',
+                'Output only. The service account that will be used by the Log Router to access your Cloud KMS key. Before enabling CMEK for Log Router, you must first assign the cloudkms.cryptoKeyEncrypterDecrypter role to the service account that the Log Router will use to access your Cloud KMS key. Use <xref uid="\Google\Logging\V2\ConfigServiceV2Client::getCmekSettings()">GetCmekSettings</xref> to obtain the service account ID. See [Enabling CMEK for Log Router](https://cloud.google.com/logging/docs/routing/managed-encryption) for more information.'
+            ],
+            [
+                // Separation using newlines
                 'Required. The [Model\'s][google.cloud.aiplatform.v1.BatchPredictionJob.model]' . PHP_EOL
                 . '[PredictSchemata\'s][google.cloud.aiplatform.v1.Model.predict_schemata]' . PHP_EOL
                 . '[instance_schema_uri][google.cloud.aiplatform.v1.PredictSchemata.instance_schema_uri].',
@@ -163,7 +169,7 @@ class NodeTest extends TestCase
         ];
     }
 
-    public function testReplaceProtoRefWithXrefWithPackageName()
+    public function testProtoRefWithXrefUsingPackageName()
     {
         $description = '[ListBackups][google.bigtable.admin.v2.BigtableTableAdmin.ListBackups]';
 
