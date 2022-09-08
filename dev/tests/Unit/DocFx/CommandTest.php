@@ -45,11 +45,17 @@ class CommandTest extends TestCase
      */
     public function testDocFxFiles(string $file)
     {
-        $this->assertTrue(file_exists(self::$fixturesDir . '/' . $file), $file);
-        $this->assertEquals(
-            Yaml::parse(file_get_contents(self::$fixturesDir . '/' . $file)),
-            Yaml::parse(file_get_contents(self::$tmpDir . '/' . $file))
+        $this->assertTrue(
+            file_exists(self::$fixturesDir . '/' . $file),
+            $file . ' does not exist in fixtures'
         );
+
+        $left  = self::$fixturesDir . '/' . $file;
+        $right = self::$tmpDir . '/' . $file;
+        if (file_get_contents($left) !== file_get_contents($right)) {
+            $output = shell_exec(sprintf('git diff --no-index %s %s --color=always', $left, $right));
+            $this->assertTrue(false, $output);
+        }
     }
 
     public function provideDoxFxFiles()
@@ -57,7 +63,7 @@ class CommandTest extends TestCase
         $structureXml = __DIR__ . '/../../fixtures/phpdoc/structure.xml';
         $tmpDir = sys_get_temp_dir() . '/' . rand();
         $cmd = sprintf(
-            __DIR__ . '/../../../google-cloud docfx Vision %s --out=%s',
+            __DIR__ . '/../../../google-cloud docfx --component Vision --xml %s --out=%s',
             $structureXml,
             $tmpDir
         );
