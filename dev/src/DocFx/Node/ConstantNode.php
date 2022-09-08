@@ -29,6 +29,11 @@ class ConstantNode
         private SimpleXMLElement $xmlNode
     ) {}
 
+    public function getName(): string
+    {
+        return $this->xmlNode->name;
+    }
+
     public function getValue(): string
     {
         return $this->xmlNode->value;

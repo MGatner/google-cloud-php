@@ -97,7 +97,6 @@ class Pages
         if ($isDiregapic) {
             foreach ($pages as $className => $page) {
                 if ($page->getClassNode()->isProtobufEnumClass()) {
-                    // echo($page->getClassNode()->getFullname() . PHP_EOL);
                     unset($pages[$className]);
                 }
             }
@@ -131,6 +130,18 @@ class Pages
         }
 
         return $pages;
+    }
+
+    public function getProtoPackages(): array
+    {
+        $serviceNames = [];
+        foreach ($this->pages as $page) {
+            $classNode = $page->getClassNode();
+            if ($classNode->isServiceClass()) {
+                $serviceNames[$classNode->getProtoPackage()] = ltrim($classNode->getNamespace(), '\\');
+            }
+        }
+        return $serviceNames;
     }
 
     public function getTocItems(): array

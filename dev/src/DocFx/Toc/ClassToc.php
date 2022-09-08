@@ -39,11 +39,7 @@ class ClassToc
 
     public function isServiceClass(): bool
     {
-        // returns true if the class extends a generated GAPIC client
-        if ($extends = $this->classNode->getExtends()) {
-            return 'GapicClient' === substr($extends, -11);
-        }
-        return false;
+        return $this->classNode->isServiceClass();
     }
 
     public function isProtobufMessageClass(): bool

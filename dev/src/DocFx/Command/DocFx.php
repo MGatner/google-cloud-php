@@ -26,6 +26,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 use RuntimeException;
 use Google\Cloud\Dev\DocFx\Pages;
+use Google\Cloud\Dev\DocFx\Node\XrefTrait;
 
 class DocFx extends Command
 {
@@ -92,8 +93,10 @@ class DocFx extends Command
         $tocItems = [];
         foreach ($namespaces as $namespace) {
             $pages = new Pages($xml, $namespace);
+            $pageList = $pages->getPages();
+            XrefTrait::$protoPackagesToPhpNamespaces = $pages->getProtoPackages();
 
-            foreach ($pages->getPages() as $page) {
+            foreach ($pageList as $page) {
                 $docFxArray = ['items' => $page->getItems()];
 
                 // Dump the YAML for the class node

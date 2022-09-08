@@ -19,10 +19,7 @@ namespace Google\Cloud\Dev\DocFx\Node;
 
 trait XrefTrait
 {
-    private static $protoPrefixesToPhpNamespaces = [
-        'google.bigtable.admin.v2.' => 'Google\Cloud\Bigtable\Admin\V2\\',
-        'google.bigtable.v2.'       => 'Google\Cloud\Bigtable\V2\\',
-    ];
+    public static $protoPackagesToPhpNamespaces = [];
 
     /**
      * @param string $type            The parameter type to replace
@@ -93,7 +90,7 @@ trait XrefTrait
         return preg_replace_callback(
             '/\[([^ ]*?)\]\[([a-z1-9\.]*)([a-zA-Z_\.]*)\]/',
             function ($matches) {
-                list($link, $name, $namespace, $class) = $matches;
+                list($link, $name, $package, $class) = $matches;
                 $property = $method = $constant = null;
 
                 // if the last word is all lowercase, it's a property
@@ -108,8 +105,12 @@ trait XrefTrait
                 }
 
                 // Determine namespace
-                $namespace = self::$protoPrefixesToPhpNamespaces[$namespace]
-                    ?? str_replace(' ', '\\', ucwords(str_replace('.', ' ', $namespace)));
+                $package = rtrim($package, '.');
+
+                // Check the package name against the proto packages for this component (see DocFx)
+                $namespace =
+                    XrefTrait::$protoPackagesToPhpNamespaces[$package]
+                    ?? str_replace(' ', '\\', ucwords(str_replace('.', ' ', $package)));
 
                 $classParts = explode('.', $class);
 
@@ -119,7 +120,7 @@ trait XrefTrait
                     $method = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property)));
                 } elseif (count($classParts) === 2) {
                     // Check if the nested class exists, and if not, assume this is a service method
-                    $uid = sprintf('\\%s%s', $namespace, implode('\\', $classParts));
+                    $uid = sprintf('\\%s\\%s', $namespace, implode('\\', $classParts));
                     if (!class_exists($uid)) {
                         $classParts[0] .= 'Client';
                         $method = lcfirst($classParts[1]);
@@ -127,7 +128,7 @@ trait XrefTrait
                     }
                 }
 
-                $uid = sprintf('\\%s%s', $namespace, implode('\\', $classParts));
+                $uid = sprintf('\\%s\\%s', $namespace, implode('\\', $classParts));
                 if ($method) {
                     $uid = sprintf('%s::%s()', $uid, $method);
                 } elseif ($constant) {

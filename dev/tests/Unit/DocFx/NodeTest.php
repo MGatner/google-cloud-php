@@ -18,6 +18,7 @@
 namespace Google\Cloud\Dev\Tests\Unit\DocFx;
 
 use PHPUnit\Framework\TestCase;
+use Google\Cloud\Dev\DocFx\Node\ClassNode;
 use Google\Cloud\Dev\DocFx\Node\MethodNode;
 use Google\Cloud\Dev\DocFx\Node\XrefTrait;
 use SimpleXMLElement;
@@ -77,6 +78,15 @@ class NodeTest extends TestCase
         );
     }
 
+    public function testProtoPackage()
+    {
+        $serviceXml = file_get_contents(__DIR__ . '/../../fixtures/phpdoc/service.xml');
+        $class = new ClassNode(new SimpleXMLElement($serviceXml));
+
+        $this->assertTrue($class->isServiceClass());
+        $this->assertEquals('google.cloud.vision.v1', $class->getProtoPackage());
+    }
+
     /**
      * @dataProvider provideReplaceProtoRefWithXref
      */
@@ -131,7 +141,7 @@ class NodeTest extends TestCase
             [
                 // service methods without a "service" suffix
                 '[ListBackups][google.bigtable.admin.v2.BigtableTableAdmin.ListBackups]',
-                '<xref uid="\Google\Cloud\Bigtable\Admin\V2\BigtableTableAdminClient::listBackups()">ListBackups</xref>'
+                '<xref uid="\Google\Bigtable\Admin\V2\BigtableTableAdminClient::listBackups()">ListBackups</xref>'
             ],
             [
                 // Enum constants
@@ -151,5 +161,26 @@ class NodeTest extends TestCase
                 'Testing that a code sample like $foo["bar"]["baz"] does not get replaced'
             ],
         ];
+    }
+
+    public function testReplaceProtoRefWithXrefWithPackageName()
+    {
+        $description = '[ListBackups][google.bigtable.admin.v2.BigtableTableAdmin.ListBackups]';
+
+        $xref = new class {
+            use XrefTrait;
+            public function replace(string $description) {
+                return $this->replaceProtoRef($description);
+            }
+        };
+
+        XrefTrait::$protoPackagesToPhpNamespaces = [
+            'google.bigtable.admin.v2' => 'Google\\Cloud\\Bigtable\\Admin\\V2',
+        ];
+
+        $this->assertEquals(
+            '<xref uid="\Google\Cloud\Bigtable\Admin\V2\BigtableTableAdminClient::listBackups()">ListBackups</xref>',
+            $xref->replace($description)
+        );
     }
 }

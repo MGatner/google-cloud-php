@@ -61,6 +61,15 @@ class ClassNode
         return false !== strpos($this->getNamespace(), '\Enums\\');
     }
 
+    public function isServiceClass(): bool
+    {
+        // returns true if the class extends a generated GAPIC client
+        if ($extends = $this->getExtends()) {
+            return 'GapicClient' === substr($extends, -11);
+        }
+        return false;
+    }
+
     public function getStatus(): string
     {
         if (!$this->xmlNode->docblock) {
@@ -144,5 +153,18 @@ class ClassNode
     public function setChildNode(ClassNode $childNode)
     {
         $this->childNode = $childNode;
+    }
+
+    public function getProtoPackage(): ?string
+    {
+        $constants = $this->getConstants();
+        foreach ($constants as $constant) {
+            if ($constant->getName() === 'SERVICE_NAME') {
+                // pop the service from the end to get the package name
+                $package = trim($constant->getValue(), '\'');
+                return substr($package, 0, strrpos($package, '.'));
+            }
+        }
+        return null;
     }
 }

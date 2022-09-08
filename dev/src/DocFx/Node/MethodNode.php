@@ -24,7 +24,6 @@ class MethodNode
     use DocblockTrait;
     use ParentNodeTrait;
     use VisibilityTrait;
-    use XrefTrait;
 
     public function __construct(
         private SimpleXMLElement $xmlNode
