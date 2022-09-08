@@ -8,8 +8,8 @@ vendor/
 *.iml
 
 # DocFX
-*/out/*
-*/docs.metadata
+**/out/*
+**/docs.metadata
 */.phpdoc/*
 
 # do not delete

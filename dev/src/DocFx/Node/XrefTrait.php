@@ -19,6 +19,11 @@ namespace Google\Cloud\Dev\DocFx\Node;
 
 trait XrefTrait
 {
+    private static $protoPrefixesToPhpNamespaces = [
+        'google.bigtable.admin.v2.' => 'Google\Cloud\Bigtable\Admin\V2\\',
+        'google.bigtable.v2.'       => 'Google\Cloud\Bigtable\V2\\',
+    ];
+
     /**
      * @param string $type            The parameter type to replace
      * @param bool   $replaceWithLink False for return types, as docfx HTML-escapes return values
@@ -76,10 +81,68 @@ trait XrefTrait
         );
     }
 
-    private function replaceUidWithLink(string $uid): string
+    /**
+     * Replaces protobuf references in text. This will match the following:
+     *  - [link][google.cloud.automl.v1.SomeClass]
+     *  - [link][google.cloud.automl.v1.SomeClass.some_property]
+     *  - [link][google.cloud.automl.v1.SomeClass.SomeNestedClass]
+     *  - [link][google.cloud.automl.v1.SomeServiceClass.SomeMethod]
+     */
+    private function replaceProtoRef(string $description): string
+    {
+        return preg_replace_callback(
+            '/\[([^ ]*?)\]\[([a-z1-9\.]*)([a-zA-Z_\.]*)\]/',
+            function ($matches) {
+                list($link, $name, $namespace, $class) = $matches;
+                $property = $method = $constant = null;
+
+                // if the last word is all lowercase, it's a property
+                // if the last word is all uppercase, it's a constant
+                // otherwise, it's a nested class
+                if (preg_match('/([a-zA-Z\.]+)?\.([a-z_]+)$/', $class, $matches)) {
+                    $class = $matches[1];
+                    $property = $matches[2];
+                } elseif (preg_match('/([a-zA-Z\.]+)?\.([A-Z_]+)$/', $class, $matches)) {
+                    $class = $matches[1];
+                    $constant = $matches[2];
+                }
+
+                // Determine namespace
+                $namespace = self::$protoPrefixesToPhpNamespaces[$namespace]
+                    ?? str_replace(' ', '\\', ucwords(str_replace('.', ' ', $namespace)));
+
+                $classParts = explode('.', $class);
+
+                if ($property) {
+                    // Convert the underscore property name to camel case getter method name
+                    $property = ltrim($property, '.');
+                    $method = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property)));
+                } elseif (count($classParts) === 2) {
+                    // Check if the nested class exists, and if not, assume this is a service method
+                    $uid = sprintf('\\%s%s', $namespace, implode('\\', $classParts));
+                    if (!class_exists($uid)) {
+                        $classParts[0] .= 'Client';
+                        $method = lcfirst($classParts[1]);
+                        array_pop($classParts);
+                    }
+                }
+
+                $uid = sprintf('\\%s%s', $namespace, implode('\\', $classParts));
+                if ($method) {
+                    $uid = sprintf('%s::%s()', $uid, $method);
+                } elseif ($constant) {
+                    $uid = sprintf('%s::%s', $uid, $constant);
+                }
+                return $this->replaceUidWithLink($uid, $name);
+            },
+            $description
+        );
+    }
+
+    private function replaceUidWithLink(string $uid, string $name = null): string
     {
         // Remove proceeding "\" from namespace
-        $name = substr($uid, 1);
+        $name = $name ?: ltrim($uid, '\\');
 
         // Check for external package namespaces
         switch (true) {

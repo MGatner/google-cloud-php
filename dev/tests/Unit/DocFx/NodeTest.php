@@ -19,6 +19,7 @@ namespace Google\Cloud\Dev\Tests\Unit\DocFx;
 
 use PHPUnit\Framework\TestCase;
 use Google\Cloud\Dev\DocFx\Node\MethodNode;
+use Google\Cloud\Dev\DocFx\Node\XrefTrait;
 use SimpleXMLElement;
 
 /**
@@ -37,19 +38,95 @@ class NodeTest extends TestCase
         $this->assertCount(5, $params);
 
         // Assert parent option parameter
-        $this->assertEquals('data', $params[0]['name']);
-        $this->assertEquals('array', $params[0]['type']);
+        $this->assertEquals('data', $params[0]->getName());
+        $this->assertEquals('array', $params[0]->getType());
         $this->assertEquals(
             'Optional. Data for populating the Message object.',
-            $params[0]['description']
+            $params[0]->getDescription()
         );
 
         // Assert nested parameter
-        $this->assertEquals('↳ total_pages', $params[3]['name']);
-        $this->assertEquals('int', $params[3]['type']);
+        $this->assertEquals('↳ total_pages', $params[3]->getName());
+        $this->assertEquals('int', $params[3]->getType());
         $this->assertEquals(
             'This field gives the total number of pages in the file.',
-            $params[3]['description']
+            $params[3]->getDescription()
         );
+    }
+
+    /**
+     * @dataProvider provideReplaceProtoRefWithXref
+     */
+    public function testReplaceProtoRefWithXref(string $description, string $expected)
+    {
+        $xref = new class {
+            use XrefTrait;
+            public function replace(string $description) {
+                return $this->replaceProtoRef($description);
+            }
+        };
+
+        $this->assertEquals($expected, $xref->replace($description));
+    }
+
+    public function provideReplaceProtoRefWithXref()
+    {
+        return [
+            [
+                'Testing that a [ProtoRef][google.cloud.ProtoRef] gets replaced as expected'
+                 . PHP_EOL
+                 . ' and so does a [SecondProtoRef][google.cloud.SecondProtoRef].',
+                'Testing that a <xref uid="\Google\Cloud\ProtoRef">ProtoRef</xref> gets replaced as expected'
+                 . PHP_EOL
+                 . ' and so does a <xref uid="\Google\Cloud\SecondProtoRef">SecondProtoRef</xref>.',
+            ],
+            [
+                // property reference
+                '[google.cloud.Operation.name][google.cloud.Operation.name]',
+                '<xref uid="\Google\Cloud\Operation::getName()">google.cloud.Operation.name</xref>',
+            ],
+            [
+                // property with an underscore reference
+                '[display_name][google.cloud.vision.v1.Product.display_name]',
+                '<xref uid="\Google\Cloud\Vision\V1\Product::getDisplayName()">display_name</xref>',
+            ],
+            [
+                // service method reference
+                '[projects.locations.endpoints.predict][google.cloud.aiplatform.v1.PredictionService.Predict]',
+                '<xref uid="\Google\Cloud\Aiplatform\V1\PredictionServiceClient::predict()">projects.locations.endpoints.predict</xref>',
+            ],
+            [
+                // nested class reference
+                '[TextAnnotation.TextProperty][google.cloud.vision.v1.TextAnnotation.TextProperty]',
+                '<xref uid="\Google\Cloud\Vision\V1\TextAnnotation\TextProperty">TextAnnotation.TextProperty</xref>',
+            ],
+            [
+                // nested class reference with property
+                '[PolicyInfo.attached_resource][google.cloud.asset.v1.BatchGetEffectiveIamPoliciesResponse.EffectiveIamPolicy.PolicyInfo.attached_resource]',
+                '<xref uid="\Google\Cloud\Asset\V1\BatchGetEffectiveIamPoliciesResponse\EffectiveIamPolicy\PolicyInfo::getAttachedResource()">PolicyInfo.attached_resource</xref>',
+            ],
+            [
+                // service methods without a "service" suffix
+                '[ListBackups][google.bigtable.admin.v2.BigtableTableAdmin.ListBackups]',
+                '<xref uid="\Google\Cloud\Bigtable\Admin\V2\BigtableTableAdminClient::listBackups()">ListBackups</xref>'
+            ],
+            [
+                // Enum constants
+                '[google.some.Code.INVALID_ARGUMENT][google.some.Code.INVALID_ARGUMENT]',
+                '<xref uid="\Google\Some\Code::INVALID_ARGUMENT">google.some.Code.INVALID_ARGUMENT</xref>'
+            ],
+            [
+                'Required. The [Model\'s][google.cloud.aiplatform.v1.BatchPredictionJob.model]' . PHP_EOL
+                . '[PredictSchemata\'s][google.cloud.aiplatform.v1.Model.predict_schemata]' . PHP_EOL
+                . '[instance_schema_uri][google.cloud.aiplatform.v1.PredictSchemata.instance_schema_uri].',
+                'Required. The <xref uid="\Google\Cloud\Aiplatform\V1\BatchPredictionJob::getModel()">Model\'s</xref>' . PHP_EOL
+                . '<xref uid="\Google\Cloud\Aiplatform\V1\Model::getPredictSchemata()">PredictSchemata\'s</xref>' . PHP_EOL
+                . '<xref uid="\Google\Cloud\Aiplatform\V1\PredictSchemata::getInstanceSchemaUri()">instance_schema_uri</xref>.'
+            ],
+            [
+                'Testing that a code sample like $foo["bar"]["baz"] does not get replaced',
+                'Testing that a code sample like $foo["bar"]["baz"] does not get replaced'
+            ],
+        ];
     }
 }

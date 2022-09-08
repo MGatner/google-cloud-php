@@ -36,7 +36,10 @@ trait DocblockTrait
             $content .= $longDescription;
         }
 
-        return $this->replaceSeeTag($content);
+        $content = $this->replaceSeeTag($content);
+        $content = $this->replaceProtoRef($content);
+
+        return $content;
     }
 
     public function getLongDescription(): string

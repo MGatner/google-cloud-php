@@ -45,9 +45,10 @@ class DocFx extends Command
     {
         $component = $input->getOption('component') ?: basename(getcwd());
         $componentPath = $this->checkComponent($component);
+        $output->writeln(sprintf('Generating documentation for <options=bold;fg=white>%s</>', $component));
         $xml = $input->getOption('xml');
         if (empty($xml)) {
-            $output->write('Running "phpdoc" to generate structure.xml... ');
+            $output->write('Running phpdoc to generate structure.xml... ');
             // Run "phpdoc"
             $process = new Process([
                 'phpdoc',
@@ -71,7 +72,7 @@ class DocFx extends Command
         }
 
         $releaseLevel = $this->getReleaseLevel($componentPath);
-        $namespace = $this->getNamespace($componentPath);
+        $namespace = $this->getNamespace($componentPath, $component);
 
         if (!is_dir($outDir)) {
             if (!mkdir($outDir)) {
@@ -79,7 +80,7 @@ class DocFx extends Command
             }
         }
 
-        $output->write(sprintf('Writing output to "%s"... ', $outDir));
+        $output->write(sprintf('Writing output to <fg=white>%s</>... ', $outDir));
 
         // YAML dump configuration
         $inline = 9; // The level where you switch to inline YAML
@@ -119,7 +120,7 @@ class DocFx extends Command
         $output->writeln('Done.');
 
         if ($metadataVersion = $input->getOption('metadata-version')) {
-            $output->write(sprintf('Writing docs.metadata with version "%s"... ', $metadataVersion));
+            $output->write(sprintf('Writing docs.metadata with version <fg=white>%s</>... ', $metadataVersion));
             $process = new Process([
                 'docuploader',
                 'create-metadata',
@@ -135,7 +136,7 @@ class DocFx extends Command
         }
 
         if ($stagingBucket = $input->getOption('staging-bucket')) {
-            $output->write(sprintf('Running "docuploader" to upload to staging bucket "%s"... ', $stagingBucket));
+            $output->write(sprintf('Running docuploader to upload to staging bucket <fg=white>%s</>... ', $stagingBucket));
             $process = new Process([
                 'docuploader',
                 'upload',
@@ -167,7 +168,7 @@ class DocFx extends Command
         return $repoMetadataJson['release_level'];
     }
 
-    private function getNamespace(string $componentPath): string
+    private function getNamespace(string $componentPath, string $component): string
     {
         $composerPath = $componentPath . '/composer.json';
         if (!file_exists($composerPath)) {
